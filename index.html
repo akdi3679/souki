@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Souki - Marketplace & Community</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <!-- First Line -->
+        <div class="nav-line-1">
+            <div class="nav-container">
+                <div class="logo">
+                    <h1>Souki</h1>
+                </div>
+                
+                <div class="search-container">
+                    <select class="category-select">
+                        <option value="all">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="home">Home & Garden</option>
+                        <option value="automotive">Automotive</option>
+                        <option value="sports">Sports</option>
+                        <option value="books">Books</option>
+                        <option value="toys">Toys & Games</option>
+                        <option value="beauty">Beauty & Health</option>
+                        <option value="music">Music & Instruments</option>
+                    </select>
+                    <input type="text" class="search-input" placeholder="Search for anything...">
+                    <button class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="nav-right">
+                    <div class="location-selector" onclick="openLocationModal()">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="current-location">New York, NY</span>
+                        <span class="range">5 km</span>
+                    </div>
+                    
+                    <div class="auth-container" style="position: relative;">
+                        <button class="auth-btn" id="auth-btn" onclick="toggleAuth()">
+                            <i class="fas fa-user"></i>
+                            <span>Register</span>
+                        </button>
+                        
+                        <div class="profile-dropdown" id="profile-dropdown">
+                            <div class="dropdown-item" onclick="showAnalytics()">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Analytics</span>
+                            </div>
+                            <div class="dropdown-item" onclick="showProfile()">
+                                <i class="fas fa-user"></i>
+                                <span>Profile</span>
+                            </div>
+                            <div class="dropdown-item" onclick="showSellings()">
+                                <i class="fas fa-store"></i>
+                                <span>My Sellings</span>
+                            </div>
+                            <div class="dropdown-item" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Second Line -->
+        <div class="nav-line-2">
+            <div class="nav-container">
+                <div class="nav-actions">
+                    <button class="action-btn sell-btn" onclick="openSellPanel()">
+                        <i class="fas fa-plus"></i>
+                        Sell
+                    </button>
+                    <button class="action-btn bid-btn" onclick="openBidPanel()">
+                        <i class="fas fa-gavel"></i>
+                        Bid
+                    </button>
+                </div>
+                
+                <div class="nav-icons">
+                    <button class="nav-icon active" onclick="showTab('home')" title="Home">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <button class="nav-icon" onclick="showTab('bids')" title="Bids">
+                        <i class="fas fa-gavel"></i>
+                    </button>
+                    <button class="nav-icon" onclick="showTab('wishlist')" title="Wishlist">
+                        <i class="fas fa-bookmark"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="nav-icon" onclick="showTab('groups')" title="Groups">
+                        <i class="fas fa-users"></i>
+                    </button>
+                    <button class="nav-icon" onclick="showTab('messages')" title="Messages">
+                        <i class="fas fa-envelope"></i>
+                        <span class="badge">2</span>
+                    </button>
+                </div>
+                
+                <div class="categories-list">
+                    <div class="category-item active" onclick="filterByCategory('all')">All</div>
+                    <div class="category-item" onclick="filterByCategory('electronics')">Electronics</div>
+                    <div class="category-item" onclick="filterByCategory('fashion')">Fashion</div>
+                    <div class="category-item" onclick="filterByCategory('home')">Home</div>
+                    <div class="category-item" onclick="filterByCategory('automotive')">Auto</div>
+                    
+                    <select class="category-nav-select">
+                        <option value="">More Categories</option>
+                        <option value="sports">Sports</option>
+                        <option value="books">Books</option>
+                        <option value="toys">Toys & Games</option>
+                        <option value="beauty">Beauty & Health</option>
+                        <option value="music">Music & Instruments</option>
+                        <option value="collectibles">Collectibles</option>
+                        <option value="art">Art & Crafts</option>
+                        <option value="business">Business & Industrial</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Results (Hidden by default) -->
+    <div id="search-results" class="tab-content">
+        <div class="container">
+            <div class="search-filters">
+                <div class="filter-row">
+                    <label>Sort by:</label>
+                    <select id="sort-filter">
+                        <option value="relevance">Best Match</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="newest">Newest First</option>
+                        <option value="ending">Ending Soonest</option>
+                    </select>
+                    
+                    <label>Condition:</label>
+                    <select id="condition-filter">
+                        <option value="all">All Conditions</option>
+                        <option value="new">New</option>
+                        <option value="like-new">Like New</option>
+                        <option value="good">Good</option>
+                        <option value="fair">Fair</option>
+                    </select>
+                    
+                    <label>Price Range:</label>
+                    <input type="number" placeholder="Min" id="price-min">
+                    <input type="number" placeholder="Max" id="price-max">
+                </div>
+                
+                <div class="filter-row">
+                    <label>Location:</label>
+                    <select id="location-filter">
+                        <option value="all">All Locations</option>
+                        <option value="local">Local Only</option>
+                        <option value="nationwide">Nationwide</option>
+                    </select>
+                    
+                    <label>Listing Type:</label>
+                    <select id="type-filter">
+                        <option value="all">All Listings</option>
+                        <option value="auction">Auction</option>
+                        <option value="buy-now">Buy It Now</option>
+                        <option value="classified">Classified Ad</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="search-results-grid" class="products-grid">
+                <!-- Search results will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Tab Content -->
+    <div id="home-tab" class="tab-content active">
+        <main class="main-content">
+            <!-- Daily Deals Section -->
+            <section class="daily-deals">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>🔥 Daily Deals</h2>
+                        <p>Hot sales and exclusive offers</p>
+                    </div>
+                    
+                    <div class="deals-horizontal" id="deals-grid">
+                        <!-- Deals will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recommended Section -->
+            <section class="recommended">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Recommended for You</h2>
+                        <p>Based on your interests and location</p>
+                    </div>
+                    
+                    <div class="products-grid" id="products-grid">
+                        <!-- Products will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Bids Tab Content -->
+    <div id="bids-tab" class="tab-content">
+        <div class="container">
+            <div class="bids-header">
+                <div>
+                    <h2>🔥 Hot Bids Now</h2>
+                    <p>Live auctions and ending soon</p>
+                </div>
+                <div class="live-indicator">
+                    <span class="bid-badge live">LIVE</span>
+                    <span>234 active auctions</span>
+                </div>
+            </div>
+            
+            <div class="bids-tabs">
+                <button class="bid-tab active" onclick="filterBids('all')">All Bids</button>
+                <button class="bid-tab" onclick="filterBids('watching')">Watching</button>
+                <button class="bid-tab" onclick="filterBids('ending')">Ending Soon</button>
+                <button class="bid-tab" onclick="filterBids('finished')">Finished</button>
+                <button class="bid-tab" onclick="filterBids('coming')">Coming Soon</button>
+            </div>
+            
+            <div id="bids-container">
+                <!-- Bids will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Tab Content -->
+    <div id="wishlist-tab" class="tab-content">
+        <div class="container">
+            <div id="wishlist-content">
+                <!-- Will show signin message or wishlist items -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Groups Tab Content -->
+    <div id="groups-tab" class="tab-content">
+        <div class="container">
+            <div class="section-header">
+                <h2>Buy & Sell Groups</h2>
+                <div class="search-container" style="max-width: 400px; margin: 20px auto 0;">
+                    <input type="text" class="search-input" placeholder="Search groups..." id="group-search">
+                    <button class="search-btn" onclick="searchGroups()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Popular Groups -->
+            <section style="margin-bottom: 40px;">
+                <h3 style="margin-bottom: 20px;">Popular Groups</h3>
+                <div class="deals-horizontal" id="popular-groups">
+                    <!-- Popular groups will be populated -->
+                </div>
+            </section>
+            
+            <!-- All Groups -->
+            <section>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>All Groups</h3>
+                    <select id="group-category-filter" onchange="filterGroups()">
+                        <option value="all">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="home">Home & Garden</option>
+                        <option value="automotive">Automotive</option>
+                        <option value="sports">Sports</option>
+                    </select>
+                </div>
+                
+                <div class="groups-grid" id="all-groups">
+                    <!-- All groups will be populated -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Messages Tab Content -->
+    <div id="messages-tab" class="tab-content">
+        <div class="container">
+            <div class="messages-container">
+                <div class="messages-sidebar">
+                    <div style="padding: 15px; border-bottom: 1px solid #e4e6ea;">
+                        <h3>Messages</h3>
+                        <input type="text" placeholder="Search conversations..." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 20px; margin-top: 10px;">
+                    </div>
+                    <div id="conversations-list">
+                        <!-- Conversations will be populated -->
+                    </div>
+                </div>
+                
+                <div class="messages-main">
+                    <div class="chat-header">
+                        <h4 id="chat-title">Select a conversation</h4>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div style="text-align: center; color: #65676b; margin-top: 50px;">
+                            <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 15px;"></i>
+                            <p>Select a conversation to start messaging</p>
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" placeholder="Type a message..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px;">
+                            <button style="padding: 10px 15px; background: #1877f2; color: white; border: none; border-radius: 50%; cursor: pointer;">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Souki</h3>
+                    <p>Your trusted marketplace and community platform</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Buy</h4>
+                    <ul>
+                        <li><a href="#">Registration</a></li>
+                        <li><a href="#">Bidding & buying help</a></li>
+                        <li><a href="#">Stores</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Sell</h4>
+                    <ul>
+                        <li><a href="#">Start selling</a></li>
+                        <li><a href="#">Learn to sell</a></li>
+                        <li><a href="#">Business sellers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="#">Groups</a></li>
+                        <li><a href="#">Forums</a></li>
+                        <li><a href="#">Events</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Souki. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Location Modal -->
+    <div id="location-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Choose Your Location</h3>
+                <button class="close-btn" onclick="closeLocationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="location-search">
+                    <input type="text" id="location-search-input" placeholder="Search for a city or zip code...">
+                    <button onclick="searchLocation()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="range-selector">
+                    <label>Search Range:</label>
+                    <input type="range" id="range-slider" min="1" max="50" value="5">
+                    <span id="range-value">5 km</span>
+                </div>
+                
+                <div id="map-container" class="map-container">
+                    <div class="map-view">
+                        <div class="map-marker">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="range-circle" id="range-circle"></div>
+                        <div class="map-controls">
+                            <button class="zoom-btn" onclick="zoomIn()">+</button>
+                            <button class="zoom-btn" onclick="zoomOut()">-</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="confirm-location-btn" onclick="confirmLocation()">
+                    Confirm Location
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="auth-title">Welcome to Souki</h3>
+                <button class="close-btn" onclick="closeAuthModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form">
+                    <h4>Sign In</h4>
+                    <form>
+                        <input type="email" placeholder="Email" required>
+                        <input type="password" placeholder="Password" required>
+                        <button type="submit" class="auth-submit-btn">Sign In</button>
+                    </form>
+                    <p>Don't have an account? <a href="#" onclick="switchToSignup()">Sign up</a></p>
+                    <p style="font-size: 12px; color: #65676b; margin-top: 10px;">Test login: test@test.com / 000</p>
+                </div>
+                
+                <!-- Signup Form -->
+                <div id="signup-form" class="auth-form" style="display: none;">
+                    <h4>Create Account</h4>
+                    <form>
+                        <input type="text" placeholder="Full Name" required>
+                        <input type="email" placeholder="Email" required>
+                        <input type="password" placeholder="Password" required>
+                        <input type="password" placeholder="Confirm Password" required>
+                        <button type="submit" class="auth-submit-btn">Create Account</button>
+                    </form>
+                    <p>Already have an account? <a href="#" onclick="switchToLogin()">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sell Panel -->
+    <div id="sell-panel" class="sell-panel">
+        <div class="panel-header">
+            <h3>Create Listing</h3>
+            <button class="close-btn" onclick="closeSellPanel()">&times;</button>
+        </div>
+        <div class="panel-content">
+            <form id="sell-form">
+                <div style="margin-bottom: 20px;">
+                    <label>Title</label>
+                    <input type="text" placeholder="What are you selling?" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Category</label>
+                    <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px;">
+                        <option>Select Category</option>
+                        <option>Electronics</option>
+                        <option>Fashion</option>
+                        <option>Home & Garden</option>
+                        <option>Automotive</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Price</label>
+                    <input type="number" placeholder="0.00" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Condition</label>
+                    <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px;">
+                        <option>New</option>
+                        <option>Like New</option>
+                        <option>Good</option>
+                        <option>Fair</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Description</label>
+                    <textarea placeholder="Describe your item..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px; height: 100px; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Post to Group (Optional)</label>
+                    <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px;">
+                        <option>No Group</option>
+                        <option>Electronics Enthusiasts</option>
+                        <option>Vintage Fashion Lovers</option>
+                        <option>Home & Garden</option>
+                    </select>
+                </div>
+                
+                <button type="submit" style="width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    Create Listing
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bid Panel -->
+    <div id="bid-panel" class="bid-panel">
+        <div class="panel-header">
+            <h3>Create Auction</h3>
+            <button class="close-btn" onclick="closeBidPanel()">&times;</button>
+        </div>
+        <div class="panel-content">
+            <form id="bid-form">
+                <div style="margin-bottom: 20px;">
+                    <label>Title</label>
+                    <input type="text" placeholder="What are you auctioning?" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Starting Bid</label>
+                    <input type="number" placeholder="0.00" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Auction Duration</label>
+                    <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px;">
+                        <option>1 Day</option>
+                        <option>3 Days</option>
+                        <option>5 Days</option>
+                        <option>7 Days</option>
+                        <option>10 Days</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Buy It Now Price (Optional)</label>
+                    <input type="number" placeholder="0.00" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>Description</label>
+                    <textarea placeholder="Describe your item..." style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px; height: 100px; resize: vertical;"></textarea>
+                </div>
+                
+                <button type="submit" style="width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    Start Auction
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="detail-modal">
+        <div class="detail-content">
+            <button class="close-btn" onclick="closeDetailModal()" style="position: absolute; top: 15px; right: 15px; z-index: 1;">&times;</button>
+            <div id="detail-content-body">
+                <!-- Detail content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
